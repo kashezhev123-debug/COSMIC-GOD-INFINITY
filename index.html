@@ -1,63 +1,156 @@
 <!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>COSMIC GOD ∞</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#080511">
+<title>COSMIC GOD ∞ 3.0</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#050611;color:#f5f1ff;font-family:system-ui,-apple-system,sans-serif;overflow:hidden}canvas{display:block}
-header{position:fixed;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:2;pointer-events:none;font-weight:900;letter-spacing:2px}header span{color:#b18aff}.pill,.panel,.stat{background:#101329d9;border:1px solid #7653b855;backdrop-filter:blur(14px);border-radius:13px}.pill{padding:7px 10px;font-size:10px;letter-spacing:1px}
-.hud{position:fixed;top:52px;left:12px;display:grid;gap:7px;z-index:2}.stat{padding:8px 11px;min-width:130px}.stat small{display:block;color:#a7a5c5;font-size:9px;text-transform:uppercase}.stat b{font-size:14px}
-.panel{position:fixed;z-index:2;padding:12px;width:225px}.left{bottom:12px;left:12px}.right{right:12px;top:54px}h3{font-size:10px;letter-spacing:2px;color:#c9b4ff;margin:0 0 10px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}button{border:1px solid #8e68ca66;background:#20183b;color:#f5efff;border-radius:9px;padding:10px 6px;font-size:11px;font-weight:650}button:active{background:#6844a9}button.primary{background:linear-gradient(110deg,#6835ce,#a34fe9);border:0}button.warn{color:#ffb9d0}.full{width:100%;margin-top:8px}.line{display:flex;gap:6px}.line button{flex:1}label{display:block;color:#aaa8c8;font-size:10px;margin:10px 0 4px}input{width:100%;accent-color:#a78bfa}#toast{position:fixed;top:23%;left:50%;transform:translate(-50%,-8px);opacity:0;transition:.25s;background:#211638;border:1px solid #a78bfa;border-radius:30px;padding:10px 16px;font-size:12px;z-index:5;white-space:nowrap}#toast.show{opacity:1;transform:translate(-50%,0)}#hint{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);font-size:9px;color:#aaa8c8;z-index:1;white-space:nowrap}
-@media(max-width:650px){.panel{width:calc(50% - 18px);padding:9px;bottom:10px;top:auto;max-height:48vh;overflow:auto}.left{left:10px}.right{right:10px}.stat{min-width:112px;padding:7px 9px}.stat b{font-size:12px}button{font-size:10px;padding:9px 4px}h3{font-size:9px}.pill{font-size:9px}#hint{display:none}}
+:root{--bg:#080511;--panel:rgba(15,10,29,.88);--line:rgba(177,120,255,.28);--violet:#a76bff;--cyan:#62e7ff;--text:#f3edff;--muted:#a69bb9}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:var(--bg);color:var(--text);font:14px Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+#scene{position:fixed;inset:0;z-index:0}canvas{display:block}
+.top{position:fixed;z-index:3;top:12px;left:12px;right:12px;display:flex;align-items:center;justify-content:space-between;pointer-events:none}
+.brand{pointer-events:auto;padding:10px 14px;border:1px solid var(--line);border-radius:14px;background:var(--panel);backdrop-filter:blur(16px);box-shadow:0 0 30px #7b35ff22}
+.brand b{letter-spacing:2px;font-size:13px}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:3px;letter-spacing:1.5px}
+.topright{display:flex;gap:7px;pointer-events:auto}.chip,.btn{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:11px;padding:9px 11px;backdrop-filter:blur(14px);font:inherit}
+.btn{cursor:pointer;transition:.18s}.btn:hover,.btn.active{border-color:var(--violet);box-shadow:0 0 18px #9b59ff33}.btn.primary{background:linear-gradient(135deg,#7135bd,#3b1d70);border-color:#b58aff}.btn.danger{border-color:#ff648a66;color:#ff9ab2}
+.layout{position:fixed;z-index:2;inset:68px 12px 12px;display:grid;grid-template-columns:238px 1fr 250px;gap:10px;pointer-events:none}
+.panel{pointer-events:auto;min-height:0;overflow:auto;background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:12px;backdrop-filter:blur(18px);box-shadow:0 12px 40px #0006}
+.panel h3{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:#c9a8ff;margin:4px 0 10px}
+.panel h4{font-size:12px;margin:14px 0 7px;color:#e8ddff}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:7px}.action{min-height:55px;text-align:left;display:flex;flex-direction:column;justify-content:center;gap:4px}.action strong{font-size:12px}.action small{font-size:10px;color:var(--muted)}
+.row{display:flex;gap:7px;align-items:center}.row>*{min-width:0;flex:1}
+label{display:block;color:var(--muted);font-size:11px;margin:10px 0 5px}
+input[type=range]{width:100%;accent-color:var(--violet)}select,input[type=text]{width:100%;background:#100b1c;color:var(--text);border:1px solid var(--line);border-radius:9px;padding:9px}
+.stat{display:flex;justify-content:space-between;color:var(--muted);font-size:11px;padding:6px 0;border-bottom:1px solid #ffffff0b}.stat b{color:var(--text);font-weight:600}
+#center{pointer-events:none;display:flex;align-items:flex-end;justify-content:center;padding-bottom:10px}
+.hint{background:#0d081bbd;border:1px solid var(--line);border-radius:12px;padding:9px 13px;color:#c7badb;font-size:11px;backdrop-filter:blur(10px);text-align:center}
+#toast{position:fixed;z-index:5;left:50%;bottom:78px;transform:translateX(-50%);background:#1b1030;border:1px solid #9b62e8;border-radius:12px;padding:10px 15px;opacity:0;transition:.25s;pointer-events:none;max-width:90%;text-align:center}
+#toast.show{opacity:1}
+#objectName{font-weight:700;font-size:14px}.muted{color:var(--muted);font-size:11px;line-height:1.5}
+.tabs{display:flex;gap:5px;margin-bottom:10px}.tabs .btn{flex:1;padding:8px 4px;font-size:11px}
+.mobilebar{display:none}
+@media(max-width:850px){.layout{grid-template-columns:1fr 1fr;grid-template-rows:minmax(0,1fr);inset:66px 8px 64px;gap:7px}.panel{padding:9px}.left{grid-column:1;grid-row:1}.right{grid-column:2;grid-row:1}.brand{padding:8px 10px}.topright .chip{display:none}.action{min-height:48px}.mobilebar{display:flex;position:fixed;z-index:4;bottom:8px;left:8px;right:8px;gap:6px}.mobilebar .btn{flex:1;font-size:11px;padding:10px 3px}.hint{font-size:10px}}
+@media(max-width:430px){.layout{grid-template-columns: minmax(0,1fr) minmax(0,1fr)}.panel{font-size:12px}.grid2{gap:5px}.action strong{font-size:11px}.action small{font-size:9px}.topright .btn{padding:8px}.brand b{font-size:11px}}
 </style>
 </head>
 <body>
-<header><div>COSMIC <span>GOD</span> ∞</div><div class="pill" id="mode">SANDBOX • GOD MODE</div></header>
-<div class="hud"><div class="stat"><small>Энергия</small><b>∞ БЕЗГРАНИЧНАЯ</b></div><div class="stat"><small>Объекты</small><b id="count">0</b></div><div class="stat"><small>Время</small><b id="clock">1.0×</b></div></div>
-<section class="panel left"><h3>СОЗДАТЬ ОБЪЕКТ</h3><div class="grid">
-<button data-type="planet">🪐 Планета</button><button data-type="star">☀️ Звезда</button><button data-type="black">🕳 Чёрная дыра</button><button data-type="moon">🌙 Спутник</button><button data-type="meteor">☄️ Метеор</button><button id="blast">✨ Взрыв</button></div>
-<label>Мощность <b id="powerval">75%</b></label><input id="power" type="range" min="1" max="100" value="75">
-<div class="line" style="margin-top:8px"><button class="warn" id="remove">Удалить</button><button id="reset">Новая вселенная</button></div></section>
-<section class="panel right"><h3>УПРАВЛЕНИЕ</h3><div class="line"><button id="pause">Ⅱ Пауза</button><button id="campaign">Кампания</button></div>
-<label>Скорость времени</label><input id="speed" type="range" min="0" max="300" value="100">
-<label>Гравитация</label><input id="gravity" type="range" min="0" max="200" value="100">
-<label>Масштаб камеры</label><input id="zoom" type="range" min="20" max="150" value="75">
-<button class="full" id="focus">◎ К выбранному объекту</button></section>
-<div id="toast"></div><div id="hint">Перетаскивай пальцем, чтобы вращать камеру • прокручивай для приближения</div>
-<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-<script>
-(()=>{
-const $=id=>document.getElementById(id);if(!window.THREE){$('toast').textContent='Нет соединения для загрузки 3D-движка';$('toast').classList.add('show');return}
-const scene=new THREE.Scene();scene.background=new THREE.Color(0x03040d);scene.fog=new THREE.FogExp2(0x03040d,.0007);
-const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,3000);camera.position.set(0,25,75);
-const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(renderer.domElement);
-scene.add(new THREE.AmbientLight(0x9caaff,.75));const light=new THREE.PointLight(0xffffff,260,500);light.position.set(15,25,25);scene.add(light);
-const starPositions=[];for(let i=0;i<4500;i++)starPositions.push((Math.random()-.5)*1500,(Math.random()-.5)*900,(Math.random()-.5)*1500);
-const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(starPositions,3));const stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xc8caff,size:1.2}));scene.add(stars);
-const world=new THREE.Group();scene.add(world);let bodies=[],selected=null,paused=false,mode='SANDBOX',speed=1,grav=1;
-const names={planet:'Планета',star:'Звезда',black:'Чёрная дыра',moon:'Спутник',meteor:'Метеор'};
-function notify(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(notify.t);notify.t=setTimeout(()=>$('toast').classList.remove('show'),1600)}
-function update(){ $('count').textContent=bodies.length}
-function create(type,pos){let r={planet:2.7,star:5.2,black:4,moon:1.3,meteor:1}[type],color={planet:[0x2679c5,0x399d79,0x9c65c9,0xb37a4a][Math.floor(Math.random()*4)],star:0xffc15b,black:0x090511,moon:0xbac8df,meteor:0xb96b4d}[type];
-let g=new THREE.Group();g.position.copy(pos||new THREE.Vector3((Math.random()-.5)*35,0,(Math.random()-.5)*35));
-let m=new THREE.Mesh(new THREE.SphereGeometry(r,40,32),new THREE.MeshStandardMaterial({color,roughness:.7,emissive:type==='star'?0xff8a26:type==='black'?0x260d48:0,emissiveIntensity:type==='star'?1.4:.4}));g.add(m);
-if(type==='star'){g.add(new THREE.PointLight(0xffb45e,260,160));let halo=new THREE.Mesh(new THREE.SphereGeometry(r*1.25,24,24),new THREE.MeshBasicMaterial({color:0xffa34a,transparent:true,opacity:.1}));g.add(halo)}
-if(type==='black'){let ring=new THREE.Mesh(new THREE.TorusGeometry(6,.45,12,80),new THREE.MeshBasicMaterial({color:0x9b54ff,transparent:true,opacity:.85}));ring.rotation.x=1.1;g.add(ring);g.add(new THREE.PointLight(0x813dff,100,35))}
-if(type==='planet'||type==='moon'){let shell=new THREE.Mesh(new THREE.SphereGeometry(r*1.015,24,24),new THREE.MeshBasicMaterial({color:0x9bdcff,wireframe:true,transparent:true,opacity:.07}));g.add(shell)}
-world.add(g);let b={type,g,m,r,v:new THREE.Vector3((Math.random()-.5)*.35,0,(Math.random()-.5)*.35)};bodies.push(b);selected=b;update();notify(names[type]+' создана');return b}
-function reset(){bodies.forEach(b=>world.remove(b.g));bodies=[];selected=null;create('star',new THREE.Vector3());create('planet',new THREE.Vector3(18,0,0));create('moon',new THREE.Vector3(23,0,0));update();camera.position.set(0,25,75);camera.lookAt(0,0,0);notify('Вселенная создана')}
-document.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>create(b.dataset.type));
-$('reset').onclick=reset;$('remove').onclick=()=>{if(!selected)return notify('Сначала выбери или создай объект');world.remove(selected.g);bodies=bodies.filter(x=>x!==selected);selected=null;update();notify('Объект удалён')};
-$('blast').onclick=()=>{let p=selected?selected.g.position.clone():new THREE.Vector3();let flash=new THREE.PointLight(0xa66cff,700,100);flash.position.copy(p);scene.add(flash);let n=0,id=setInterval(()=>{flash.intensity*=.78;if(++n>18){clearInterval(id);scene.remove(flash)}},35);let power=+$('power').value/100;bodies.forEach(b=>b.v.add(b.g.position.clone().sub(p).normalize().multiplyScalar(power*.9)));notify('Космический импульс!')};
-$('pause').onclick=()=>{paused=!paused;$('pause').textContent=paused?'▶ Играть':'Ⅱ Пауза';notify(paused?'Время остановлено':'Время запущено')};
-$('campaign').onclick=()=>{mode=mode==='SANDBOX'?'CAMPAIGN':'SANDBOX';$('campaign').textContent=mode==='SANDBOX'?'Кампания':'Песочница';$('mode').textContent=mode+' • GOD MODE';notify('Режим: '+mode)};
-$('speed').oninput=e=>{speed=+e.target.value/100;$('clock').textContent=speed.toFixed(1)+'×'};$('gravity').oninput=e=>grav=+e.target.value/100;$('power').oninput=e=>$('powerval').textContent=e.target.value+'%';
-$('zoom').oninput=e=>{let target=180-(+e.target.value);camera.position.setLength(target)};
-$('focus').onclick=()=>{if(!selected)return notify('Выбери объект');let p=selected.g.position;camera.position.copy(p.clone().add(new THREE.Vector3(0,20,55)));camera.lookAt(p)};
-let down=false,px=0,py=0;renderer.domElement.addEventListener('pointerdown',e=>{down=true;px=e.clientX;py=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});renderer.domElement.addEventListener('pointerup',()=>down=false);renderer.domElement.addEventListener('pointermove',e=>{if(!down)return;let dx=e.clientX-px,dy=e.clientY-py;px=e.clientX;py=e.clientY;let s=new THREE.Spherical().setFromVector3(camera.position);s.theta-=dx*.005;s.phi=THREE.MathUtils.clamp(s.phi+dy*.005,.15,Math.PI-.15);camera.position.setFromSpherical(s);camera.lookAt(0,0,0)});
-renderer.domElement.addEventListener('wheel',e=>{camera.position.multiplyScalar(e.deltaY>0?1.08:.92);camera.position.clampLength(12,280)},{passive:true});
-const clock=new THREE.Clock();function animate(){requestAnimationFrame(animate);let dt=Math.min(clock.getDelta(),.04);if(!paused){let d=dt*speed;stars.rotation.y+=d*.002;bodies.forEach(b=>{b.m.rotation.y+=d*.12;if(b.type==='black'){if(b.g.children[1])b.g.children[1].rotation.z+=d*.3;bodies.slice().forEach(o=>{if(o===b)return;let dist=b.g.position.distanceTo(o.g.position);if(dist<13){o.g.position.lerp(b.g.position,.012*speed);if(dist<b.r*.8){world.remove(o.g);bodies=bodies.filter(x=>x!==o);update()}}})}else{b.g.position.addScaledVector(b.v,d*8);if(grav>0){let nearest=null,dist=Infinity;bodies.forEach(o=>{if(o===b||o.type==='black')return;let x=b.g.position.distanceTo(o.g.position);if(x<dist){dist=x;nearest=o}});if(nearest&&dist>3){let dir=nearest.g.position.clone().sub(b.g.position).normalize();b.v.addScaledVector(dir,grav*d*.006/(dist*.1+1))}}}})}renderer.render(scene,camera)}
-reset();animate();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
-})();
-</script></body></html>
+<div id="scene"></div>
+<div class="top">
+ <div class="brand"><b>✦ COSMIC GOD ∞</b><small>UNIVERSE SIMULATOR · 3.0</small></div>
+ <div class="topright"><span class="chip" id="clock">ВРЕМЯ ×1.0</span><button class="btn" id="pause">Ⅱ Пауза</button><button class="btn" id="reset">↺ Сброс</button></div>
+</div>
+<div class="layout">
+ <aside class="panel left">
+  <h3>Создание объектов</h3>
+  <div class="tabs"><button class="btn active" data-tab="space">Космос</button><button class="btn" data-tab="life">Жизнь</button><button class="btn" data-tab="power">Силы</button></div>
+  <section id="tab-space">
+   <div class="grid2">
+    <button class="btn action" data-create="planet"><strong>🌍 Планета</strong><small>Каменный мир</small></button>
+    <button class="btn action" data-create="star"><strong>☀️ Звезда</strong><small>Источник света</small></button>
+    <button class="btn action" data-create="moon"><strong>🌙 Спутник</strong><small>Орбитальное тело</small></button>
+    <button class="btn action" data-create="blackhole"><strong>🕳️ Чёрная дыра</strong><small>Гравитационная ловушка</small></button>
+    <button class="btn action" data-create="asteroid"><strong>☄️ Астероид</strong><small>Малое тело</small></button>
+    <button class="btn action" data-create="nebula"><strong>🌫️ Туманность</strong><small>Облако газа</small></button>
+    <button class="btn action" data-create="galaxy"><strong>🌀 Галактика</strong><small>Звёздная система</small></button>
+    <button class="btn action" data-create="wormhole"><strong>🌀 Червоточина</strong><small>Портал</small></button>
+   </div>
+  </section>
+  <section id="tab-life" hidden>
+   <div class="grid2">
+    <button class="btn action" data-create="life"><strong>🧬 Зародить жизнь</strong><small>На выбранной планете</small></button>
+    <button class="btn action" data-create="civilization"><strong>🏙️ Цивилизация</strong><small>Развитие общества</small></button>
+    <button class="btn action" data-create="ocean"><strong>🌊 Океаны</strong><small>Добавить воду</small></button>
+    <button class="btn action" data-create="terraform"><strong>🌱 Терраформинг</strong><small>Изменить условия</small></button>
+   </div>
+   <p class="muted">Выбери планету в сцене, затем запускай развитие. Жизнь и цивилизации — игровая модель, не научный прогноз.</p>
+  </section>
+  <section id="tab-power" hidden>
+   <div class="grid2">
+    <button class="btn action" data-power="supernova"><strong>💥 Сверхновая</strong><small>Мощный взрыв</small></button>
+    <button class="btn action" data-power="destroy"><strong>☠️ Уничтожить</strong><small>Удалить выбранное</small></button>
+    <button class="btn action" data-power="blackout"><strong>🌑 Космический импульс</strong><small>Разбросать тела</small></button>
+    <button class="btn action" data-power="consume"><strong>🕳️ Поглотить</strong><small>Создать сингулярность</small></button>
+   </div>
+   <p class="muted">Силы Бога действуют на выбранный объект или в центре сцены.</p>
+  </section>
+  <h4>Параметры вселенной</h4>
+  <label>Гравитация <b id="gravVal">1.0</b></label><input id="gravity" type="range" min="0" max="3" step=".1" value="1">
+  <label>Скорость времени <b id="speedVal">1.0×</b></label><input id="speed" type="range" min="0" max="5" step=".1" value="1">
+  <label>Масштаб камеры <b id="zoomVal">1.0×</b></label><input id="zoom" type="range" min=".35" max="3" step=".05" value="1">
+ </aside>
+ <main id="center"><div class="hint">Перетаскивай экран — вращение камеры · колесо / щипок — масштаб · нажми на объект для выбора</div></main>
+ <aside class="panel right">
+  <h3>Объект / управление</h3>
+  <div id="selected"><div id="objectName">Ничего не выбрано</div><p class="muted">Нажми на планету, звезду или другой объект в космосе.</p></div>
+  <div class="stat"><span>Объектов</span><b id="count">0</b></div>
+  <div class="stat"><span>Возраст вселенной</span><b id="age">0.0 млрд лет</b></div>
+  <div class="stat"><span>Жизнь</span><b id="lifeCount">0</b></div>
+  <div class="stat"><span>Цивилизации</span><b id="civCount">0</b></div>
+  <h4>Действия</h4>
+  <div class="grid2">
+   <button class="btn" id="focus">◎ Фокус</button><button class="btn" id="duplicate">＋ Копия</button>
+   <button class="btn" id="orbit">⟳ Орбита</button><button class="btn danger" id="delete">Удалить</button>
+  </div>
+  <h4>Сценарий</h4>
+  <select id="scenario"><option value="sandbox">Песочница</option><option value="origin">Рождение системы</option><option value="blackhole">Опасность сингулярности</option><option value="life">Новая жизнь</option></select>
+  <p class="muted" id="mission">Свободное творчество. Создай собственную вселенную.</p>
+  <button class="btn primary" id="missionBtn" style="width:100%">Запустить сценарий</button>
+  <h4>Сохранение</h4>
+  <div class="row"><button class="btn" id="save">↓ Сохранить</button><button class="btn" id="load">↑ Загрузить</button></div>
+  <input type="file" id="file" accept=".json,application/json" hidden>
+  <p class="muted">Сохранение выгружается в файл JSON на устройство.</p>
+ </aside>
+</div>
+<div class="mobilebar"><button class="btn" id="mCreate">＋ Объекты</button><button class="btn" id="mPower">⚡ Силы</button><button class="btn" id="mPause">Ⅱ Пауза</button><button class="btn" id="mSave">💾 Save</button></div>
+<div id="toast"></div>
+<script type="module">
+import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js';
+const host=document.querySelector('#scene');
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x05030d);scene.fog=new THREE.FogExp2(0x05030d,.0018);
+const camera=new THREE.PerspectiveCamera(60,innerWidth/innerHeight,.1,5000);camera.position.set(0,24,62);
+const renderer=new THREE.WebGLRenderer({antialias:true,alpha:false});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1.2;host.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0x776b99,1.1));
+const keyLight=new THREE.PointLight(0xffffff,260,1000);keyLight.position.set(0,0,0);scene.add(keyLight);
+const starGeo=new THREE.BufferGeometry(), starPos=[];for(let i=0;i<2600;i++){const r=900*Math.random(),a=Math.random()*Math.PI*2,b=Math.acos(2*Math.random()-1);starPos.push(r*Math.sin(b)*Math.cos(a),r*Math.cos(b),r*Math.sin(b)*Math.sin(a));}starGeo.setAttribute('position',new THREE.Float32BufferAttribute(starPos,3));const starField=new THREE.Points(starGeo,new THREE.PointsMaterial({color:0xb9a8ff,size:1.1,sizeAttenuation:true}));scene.add(starField);
+const objects=[];let selected=null,paused=false,age=0,gravity=1,timeSpeed=1,zoom=1,orbiting=true;
+const raycaster=new THREE.Raycaster(),pointer=new THREE.Vector2();let dragging=false,lastX=0,lastY=0,startX=0,startY=0,rotY=0,rotX=0.18;
+const mat=(color,rough=.75,metal=0)=>new THREE.MeshStandardMaterial({color,roughness:rough,metalness:metal});
+function toast(s){const t=document.querySelector('#toast');t.textContent=s;t.classList.add('show');clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.classList.remove('show'),2200)}
+function randomColor(){return new THREE.Color().setHSL(Math.random(),.65,.55)}
+function add(type,position=null,opts={}){let radius=opts.radius||({planet:2.2,star:4.5,moon:.8,blackhole:2.3,asteroid:.65,nebula:5,galaxy:7,wormhole:2.5}[type]||2);let color=opts.color||({planet:randomColor(),star:0xffd27a,moon:0xb6c7e8,blackhole:0x120d24,asteroid:0x88796f,nebula:0x8447d2,galaxy:0x9162ff,wormhole:0x44dfff}[type]||0x9b7bff);
+let mesh;if(type==='nebula'||type==='galaxy'){const g=new THREE.Group();const core=new THREE.Mesh(new THREE.SphereGeometry(radius*.35,24,16),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.22}));g.add(core);for(let i=0;i<110;i++){const a=Math.random()*Math.PI*2,r=radius*(.15+Math.random()*.85),z=(Math.random()-.5)*radius*.22;const p=new THREE.Mesh(new THREE.SphereGeometry(.07+Math.random()*.09,6,6),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.35+Math.random()*.5}));p.position.set(Math.cos(a)*r,z,Math.sin(a)*r);g.add(p)}mesh=g;
+}else if(type==='blackhole'){mesh=new THREE.Group();const sphere=new THREE.Mesh(new THREE.SphereGeometry(radius*.55,32,24),new THREE.MeshBasicMaterial({color:0x020106}));mesh.add(sphere);const ring=new THREE.Mesh(new THREE.TorusGeometry(radius*1.15,.18,12,100),new THREE.MeshBasicMaterial({color:0x9d42ff}));ring.rotation.x=Math.PI/2.25;mesh.add(ring);const glow=new THREE.PointLight(0x8a31ff,35,70);mesh.add(glow);
+}else if(type==='wormhole'){mesh=new THREE.Group();for(let i=0;i<4;i++){const ring=new THREE.Mesh(new THREE.TorusGeometry(radius*(.45+i*.17),.09,10,64),new THREE.MeshBasicMaterial({color:i%2?0x4ceaff:0xa35bff,transparent:true,opacity:.85-i*.12}));ring.rotation.y=i*.55;mesh.add(ring)}
+}else{const geometry=new THREE.SphereGeometry(radius, type==='asteroid'?12:32,type==='asteroid'?10:24);const material=type==='star'?new THREE.MeshBasicMaterial({color}):mat(color,.8,type==='moon'?.1:0);mesh=new THREE.Mesh(geometry,material);if(type==='star'){const glow=new THREE.PointLight(color,100,260);mesh.add(glow);const aura=new THREE.Mesh(new THREE.SphereGeometry(radius*1.18,24,16),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.09}));mesh.add(aura)}}
+mesh.position.copy(position||new THREE.Vector3((Math.random()-.5)*34,(Math.random()-.5)*18,(Math.random()-.5)*34));scene.add(mesh);
+const o={id:crypto.randomUUID(),type,name:(opts.name||({planet:'Планета',star:'Звезда',moon:'Спутник',blackhole:'Чёрная дыра',asteroid:'Астероид',nebula:'Туманность',galaxy:'Галактика',wormhole:'Червоточина'}[type]||type)),mesh,radius,mass:opts.mass||radius**3,velocity:new THREE.Vector3((Math.random()-.5)*.08,0,(Math.random()-.5)*.08),life:opts.life||0,civ:opts.civ||0,ocean:!!opts.ocean,terraform:!!opts.terraform,orbit:opts.orbit!==false};objects.push(o);mesh.userData.obj=o;updateStats();return o}
+function create(type){if(type==='life'||type==='civilization'||type==='ocean'||type==='terraform'){if(!selected||selected.type!=='planet'){toast('Сначала выбери планету');return}if(type==='life'){selected.life=Math.max(1,selected.life);toast('На планете зародилась простая жизнь')}if(type==='civilization'){selected.life=Math.max(1,selected.life);selected.civ++;toast('Цивилизация начала развитие')}if(type==='ocean'){selected.ocean=true;toast('Добавлены океаны')}if(type==='terraform'){selected.terraform=true;selected.mesh.material?.color?.set(0x3e9e77);toast('Терраформинг завершён')}updateSelected();updateStats();return}
+let pos=selected?selected.mesh.position.clone().add(new THREE.Vector3(7,2,0)):new THREE.Vector3((Math.random()-.5)*24,(Math.random()-.5)*14,(Math.random()-.5)*24);const o=add(type,pos);if(type==='moon'&&selected){o.orbit=true;o.orbitTarget=selected.id;o.radius=.8}select(o);toast(o.name+' создана')}
+function select(o){selected=o;updateSelected();if(o)toast('Выбран объект: '+o.name)}
+function updateSelected(){const box=document.querySelector('#selected');if(!selected){box.innerHTML='<div id="objectName">Ничего не выбрано</div><p class="muted">Нажми на объект в космосе.</p>';return}box.innerHTML=`<div id="objectName">${selected.name}</div><p class="muted">Тип: ${selected.type}<br>Масса: ${selected.mass.toFixed(1)} усл. ед.<br>Радиус: ${selected.radius.toFixed(1)} усл. ед.<br>Жизнь: ${selected.life?'есть':'нет'} · Цивилизации: ${selected.civ}</p>`}
+function updateStats(){document.querySelector('#count').textContent=objects.length;document.querySelector('#lifeCount').textContent=objects.filter(o=>o.life).length;document.querySelector('#civCount').textContent=objects.reduce((a,o)=>a+o.civ,0)}
+function remove(o){if(!o)return;scene.remove(o.mesh);const i=objects.indexOf(o);if(i>=0)objects.splice(i,1);if(selected===o)select(null);updateStats()}
+function explode(o){const p=o?o.mesh.position.clone():new THREE.Vector3();const color=o?0xff7bca:0x9c60ff;const burst=new THREE.Mesh(new THREE.SphereGeometry(1,24,16),new THREE.MeshBasicMaterial({color,transparent:true,opacity:.75,wireframe:true}));burst.position.copy(p);scene.add(burst);let scale=1;const tick=()=>{scale+=.5;burst.scale.setScalar(scale);burst.material.opacity*=.91;if(burst.material.opacity<.04){scene.remove(burst);burst.geometry.dispose();burst.material.dispose()}else requestAnimationFrame(tick)};tick();for(const x of objects){const d=x.mesh.position.distanceTo(p);if(d<18){const dir=x.mesh.position.clone().sub(p).normalize();x.velocity.addScaledVector(dir,(18-d)*.025)}}if(o)remove(o);toast('Космический взрыв!')}
+function power(p){if(p==='destroy'){if(selected)remove(selected);else toast('Выбери объект');return}if(p==='supernova'){explode(selected);return}if(p==='blackout'){const origin=selected?selected.mesh.position:new THREE.Vector3();objects.forEach(o=>{const d=o.mesh.position.clone().sub(origin).normalize();o.velocity.addScaledVector(d,1.8)});toast('Импульс разогнал материю');return}if(p==='consume'){const pos=selected?selected.mesh.position.clone():new THREE.Vector3();if(selected)remove(selected);add('blackhole',pos,{radius:3});toast('Сформирована сингулярность')}}
+function save(){const data={version:3,age,gravity,timeSpeed,objects:objects.map(o=>({type:o.type,name:o.name,radius:o.radius,mass:o.mass,pos:o.mesh.position.toArray(),vel:o.velocity.toArray(),life:o.life,civ:o.civ,ocean:o.ocean,terraform:o.terraform}))};const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='cosmic-god-universe.json';a.click();URL.revokeObjectURL(a.href);toast('Вселенная сохранена в файл')}
+function loadData(data){objects.slice().forEach(remove);age=data.age||0;gravity=data.gravity??1;timeSpeed=data.timeSpeed??1;document.querySelector('#gravity').value=gravity;document.querySelector('#speed').value=timeSpeed;for(const x of data.objects||[]){const o=add(x.type,new THREE.Vector3(...x.pos),x);o.velocity.set(...(x.vel||[0,0,0]));o.life=x.life||0;o.civ=x.civ||0;o.ocean=!!x.ocean;o.terraform=!!x.terraform}updateStats();toast('Вселенная загружена')}
+function runScenario(){const s=document.querySelector('#scenario').value;objects.slice().forEach(remove);if(s==='origin'){const star=add('star',new THREE.Vector3(0,0,0));for(let i=0;i<7;i++){const p=add('planet',new THREE.Vector3(Math.cos(i/7*Math.PI*2)*(9+i*2),0,Math.sin(i/7*Math.PI*2)*(9+i*2)));p.orbitTarget=star.id;p.orbit=true}document.querySelector('#mission').textContent='Цель: создай устойчивую звёздную систему и добавь спутники.'}if(s==='blackhole'){const bh=add('blackhole',new THREE.Vector3());for(let i=0;i<8;i++)add(i%3?'planet':'asteroid',new THREE.Vector3((Math.random()-.5)*45,0,(Math.random()-.5)*45));document.querySelector('#mission').textContent='Цель: наблюдай за аккрецией и попробуй спасти хотя бы три объекта.'}if(s==='life'){const p=add('planet',new THREE.Vector3());p.life=1;p.ocean=true;p.terraform=true;add('star',new THREE.Vector3(-17,0,-4));document.querySelector('#mission').textContent='Цель: развей цивилизацию до трёх уровней.'}if(s==='sandbox'){document.querySelector('#mission').textContent='Свободное творчество. Создай собственную вселенную.'}select(null);updateStats();toast('Сценарий запущен')}
+document.querySelectorAll('[data-create]').forEach(b=>b.addEventListener('click',()=>create(b.dataset.create)));document.querySelectorAll('[data-power]').forEach(b=>b.addEventListener('click',()=>power(b.dataset.power)));
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['space','life','power'].forEach(t=>document.querySelector('#tab-'+t).hidden=t!==b.dataset.tab)}));
+document.querySelector('#gravity').oninput=e=>{gravity=+e.target.value;document.querySelector('#gravVal').textContent=gravity.toFixed(1)};document.querySelector('#speed').oninput=e=>{timeSpeed=+e.target.value;document.querySelector('#speedVal').textContent=timeSpeed.toFixed(1)+'×';document.querySelector('#clock').textContent='ВРЕМЯ ×'+timeSpeed.toFixed(1)};document.querySelector('#zoom').oninput=e=>{zoom=+e.target.value;document.querySelector('#zoomVal').textContent=zoom.toFixed(1)+'×';camera.position.setLength(62/zoom)};
+document.querySelector('#pause').onclick=()=>{paused=!paused;document.querySelector('#pause').textContent=paused?'▶ Продолжить':'Ⅱ Пауза';document.querySelector('#mPause').textContent=paused?'▶ Старт':'Ⅱ Пауза'};document.querySelector('#mPause').onclick=()=>document.querySelector('#pause').click();
+document.querySelector('#reset').onclick=()=>{objects.slice().forEach(remove);age=0;select(null);toast('Вселенная очищена')};document.querySelector('#focus').onclick=()=>{if(selected){camera.position.copy(selected.mesh.position.clone().add(new THREE.Vector3(0,selected.radius*3,selected.radius*7)));toast('Камера сфокусирована')}};document.querySelector('#delete').onclick=()=>selected?remove(selected):toast('Сначала выбери объект');document.querySelector('#duplicate').onclick=()=>{if(selected){const o=add(selected.type,selected.mesh.position.clone().add(new THREE.Vector3(4,0,3)),selected);o.life=selected.life;o.civ=selected.civ;toast('Создана копия')}};document.querySelector('#orbit').onclick=()=>{if(selected){selected.orbit=!selected.orbit;toast(selected.orbit?'Орбитальное движение включено':'Орбитальное движение выключено')}};
+document.querySelector('#save').onclick=save;document.querySelector('#mSave').onclick=save;document.querySelector('#load').onclick=()=>document.querySelector('#file').click();document.querySelector('#file').onchange=async e=>{const f=e.target.files[0];if(f){try{loadData(JSON.parse(await f.text()))}catch{toast('Не удалось прочитать файл сохранения')}}};document.querySelector('#missionBtn').onclick=runScenario;
+document.querySelector('#mCreate').onclick=()=>{document.querySelector('#tab-space').hidden=false;document.querySelector('#tab-life').hidden=true;document.querySelector('#tab-power').hidden=true;toast('Выбери объект в левой панели')};document.querySelector('#mPower').onclick=()=>{document.querySelector('[data-tab="power"]').click()};
+function pick(e){const rect=renderer.domElement.getBoundingClientRect();pointer.x=((e.clientX-rect.left)/rect.width)*2-1;pointer.y=-((e.clientY-rect.top)/rect.height)*2+1;raycaster.setFromCamera(pointer,camera);const meshes=[];objects.forEach(o=>o.mesh.traverse(c=>{if(c.isMesh)meshes.push(c)}));const hit=raycaster.intersectObjects(meshes,false)[0];if(hit){let node=hit.object;while(node&&!node.userData.obj)node=node.parent;select(node?.userData.obj||null)}else select(null)}
+renderer.domElement.addEventListener('pointerdown',e=>{dragging=true;lastX=startX=e.clientX;lastY=startY=e.clientY});renderer.domElement.addEventListener('pointerup',e=>{if(dragging&&Math.hypot(e.clientX-startX,e.clientY-startY)<5)pick(e);dragging=false});renderer.domElement.addEventListener('pointermove',e=>{if(dragging){rotY+=(e.clientX-lastX)*.004;rotX=Math.max(-1.3,Math.min(1.3,rotX+(e.clientY-lastY)*.004));lastX=e.clientX;lastY=e.clientY}});renderer.domElement.addEventListener('wheel',e=>{camera.position.multiplyScalar(e.deltaY>0?1.08:.92);camera.position.clampLength(9,500)}, {passive:true});
+let last=performance.now();function animate(now){requestAnimationFrame(animate);const dt=Math.min((now-last)/1000,.04);last=now;if(!paused){const step=dt*timeSpeed;age+=step*.00001;for(const o of objects){if(o.type==='galaxy'||o.type==='nebula'||o.type==='wormhole')o.mesh.rotation.y+=step*.08;if(o.type==='star')o.mesh.rotation.y+=step*.12;if(o.orbitTarget){const target=objects.find(x=>x.id===o.orbitTarget);if(target){const rel=o.mesh.position.clone().sub(target.mesh.position);rel.applyAxisAngle(new THREE.Vector3(0,1,0),step*.35);o.mesh.position.copy(target.mesh.position).add(rel)}}else{o.mesh.position.addScaledVector(o.velocity,step*12)}}
+const holes=objects.filter(o=>o.type==='blackhole');for(const bh of holes){for(const o of objects){if(o===bh)continue;const delta=bh.mesh.position.clone().sub(o.mesh.position),d=delta.length();if(d<30&&d>.1){o.velocity.addScaledVector(delta.normalize(),step*gravity*bh.mass/(d*d+8)*.08);if(d<bh.radius*.8){remove(o);toast('Чёрная дыра поглотила '+o.name)}}}}for(const o of objects){if(o.life)o.civ=Math.min(3,o.civ+step*.0002*o.life);}}
+const dist=camera.position.length();camera.position.x=Math.sin(rotY)*Math.cos(rotX)*dist;camera.position.y=Math.sin(rotX)*dist;camera.position.z=Math.cos(rotY)*Math.cos(rotX)*dist;camera.lookAt(0,0,0);renderer.render(scene,camera);document.querySelector('#age').textContent=(age).toFixed(3)+' млрд лет'}
+requestAnimationFrame(animate);
+add('star',new THREE.Vector3(0,0,0),{name:'Солнце'});const home=add('planet',new THREE.Vector3(13,0,0),{name:'Земля',color:0x2878c9});home.life=1;home.ocean=true;home.orbitTarget=objects[0].id;for(let i=0;i<3;i++)add('planet',new THREE.Vector3(-18-i*8,Math.random()*3,-12+i*12));updateStats();
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+</script>
+</body>
+</html>
