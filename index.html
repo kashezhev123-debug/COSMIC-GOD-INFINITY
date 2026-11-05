@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>COSMIC GOD ∞</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#050611;color:#f5f1ff;font-family:system-ui,-apple-system,sans-serif;overflow:hidden}canvas{display:block}
+header{position:fixed;top:12px;left:14px;right:14px;display:flex;justify-content:space-between;z-index:2;pointer-events:none;font-weight:900;letter-spacing:2px}header span{color:#b18aff}.pill,.panel,.stat{background:#101329d9;border:1px solid #7653b855;backdrop-filter:blur(14px);border-radius:13px}.pill{padding:7px 10px;font-size:10px;letter-spacing:1px}
+.hud{position:fixed;top:52px;left:12px;display:grid;gap:7px;z-index:2}.stat{padding:8px 11px;min-width:130px}.stat small{display:block;color:#a7a5c5;font-size:9px;text-transform:uppercase}.stat b{font-size:14px}
+.panel{position:fixed;z-index:2;padding:12px;width:225px}.left{bottom:12px;left:12px}.right{right:12px;top:54px}h3{font-size:10px;letter-spacing:2px;color:#c9b4ff;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}button{border:1px solid #8e68ca66;background:#20183b;color:#f5efff;border-radius:9px;padding:10px 6px;font-size:11px;font-weight:650}button:active{background:#6844a9}button.primary{background:linear-gradient(110deg,#6835ce,#a34fe9);border:0}button.warn{color:#ffb9d0}.full{width:100%;margin-top:8px}.line{display:flex;gap:6px}.line button{flex:1}label{display:block;color:#aaa8c8;font-size:10px;margin:10px 0 4px}input{width:100%;accent-color:#a78bfa}#toast{position:fixed;top:23%;left:50%;transform:translate(-50%,-8px);opacity:0;transition:.25s;background:#211638;border:1px solid #a78bfa;border-radius:30px;padding:10px 16px;font-size:12px;z-index:5;white-space:nowrap}#toast.show{opacity:1;transform:translate(-50%,0)}#hint{position:fixed;bottom:10px;left:50%;transform:translateX(-50%);font-size:9px;color:#aaa8c8;z-index:1;white-space:nowrap}
+@media(max-width:650px){.panel{width:calc(50% - 18px);padding:9px;bottom:10px;top:auto;max-height:48vh;overflow:auto}.left{left:10px}.right{right:10px}.stat{min-width:112px;padding:7px 9px}.stat b{font-size:12px}button{font-size:10px;padding:9px 4px}h3{font-size:9px}.pill{font-size:9px}#hint{display:none}}
+</style>
+</head>
+<body>
+<header><div>COSMIC <span>GOD</span> ∞</div><div class="pill" id="mode">SANDBOX • GOD MODE</div></header>
+<div class="hud"><div class="stat"><small>Энергия</small><b>∞ БЕЗГРАНИЧНАЯ</b></div><div class="stat"><small>Объекты</small><b id="count">0</b></div><div class="stat"><small>Время</small><b id="clock">1.0×</b></div></div>
+<section class="panel left"><h3>СОЗДАТЬ ОБЪЕКТ</h3><div class="grid">
+<button data-type="planet">🪐 Планета</button><button data-type="star">☀️ Звезда</button><button data-type="black">🕳 Чёрная дыра</button><button data-type="moon">🌙 Спутник</button><button data-type="meteor">☄️ Метеор</button><button id="blast">✨ Взрыв</button></div>
+<label>Мощность <b id="powerval">75%</b></label><input id="power" type="range" min="1" max="100" value="75">
+<div class="line" style="margin-top:8px"><button class="warn" id="remove">Удалить</button><button id="reset">Новая вселенная</button></div></section>
+<section class="panel right"><h3>УПРАВЛЕНИЕ</h3><div class="line"><button id="pause">Ⅱ Пауза</button><button id="campaign">Кампания</button></div>
+<label>Скорость времени</label><input id="speed" type="range" min="0" max="300" value="100">
+<label>Гравитация</label><input id="gravity" type="range" min="0" max="200" value="100">
+<label>Масштаб камеры</label><input id="zoom" type="range" min="20" max="150" value="75">
+<button class="full" id="focus">◎ К выбранному объекту</button></section>
+<div id="toast"></div><div id="hint">Перетаскивай пальцем, чтобы вращать камеру • прокручивай для приближения</div>
+<script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
+<script>
+(()=>{
+const $=id=>document.getElementById(id);if(!window.THREE){$('toast').textContent='Нет соединения для загрузки 3D-движка';$('toast').classList.add('show');return}
+const scene=new THREE.Scene();scene.background=new THREE.Color(0x03040d);scene.fog=new THREE.FogExp2(0x03040d,.0007);
+const camera=new THREE.PerspectiveCamera(58,innerWidth/innerHeight,.1,3000);camera.position.set(0,25,75);
+const renderer=new THREE.WebGLRenderer({antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio,2));renderer.setSize(innerWidth,innerHeight);renderer.outputColorSpace=THREE.SRGBColorSpace;document.body.appendChild(renderer.domElement);
+scene.add(new THREE.AmbientLight(0x9caaff,.75));const light=new THREE.PointLight(0xffffff,260,500);light.position.set(15,25,25);scene.add(light);
+const starPositions=[];for(let i=0;i<4500;i++)starPositions.push((Math.random()-.5)*1500,(Math.random()-.5)*900,(Math.random()-.5)*1500);
+const sg=new THREE.BufferGeometry();sg.setAttribute('position',new THREE.Float32BufferAttribute(starPositions,3));const stars=new THREE.Points(sg,new THREE.PointsMaterial({color:0xc8caff,size:1.2}));scene.add(stars);
+const world=new THREE.Group();scene.add(world);let bodies=[],selected=null,paused=false,mode='SANDBOX',speed=1,grav=1;
+const names={planet:'Планета',star:'Звезда',black:'Чёрная дыра',moon:'Спутник',meteor:'Метеор'};
+function notify(t){$('toast').textContent=t;$('toast').classList.add('show');clearTimeout(notify.t);notify.t=setTimeout(()=>$('toast').classList.remove('show'),1600)}
+function update(){ $('count').textContent=bodies.length}
+function create(type,pos){let r={planet:2.7,star:5.2,black:4,moon:1.3,meteor:1}[type],color={planet:[0x2679c5,0x399d79,0x9c65c9,0xb37a4a][Math.floor(Math.random()*4)],star:0xffc15b,black:0x090511,moon:0xbac8df,meteor:0xb96b4d}[type];
+let g=new THREE.Group();g.position.copy(pos||new THREE.Vector3((Math.random()-.5)*35,0,(Math.random()-.5)*35));
+let m=new THREE.Mesh(new THREE.SphereGeometry(r,40,32),new THREE.MeshStandardMaterial({color,roughness:.7,emissive:type==='star'?0xff8a26:type==='black'?0x260d48:0,emissiveIntensity:type==='star'?1.4:.4}));g.add(m);
+if(type==='star'){g.add(new THREE.PointLight(0xffb45e,260,160));let halo=new THREE.Mesh(new THREE.SphereGeometry(r*1.25,24,24),new THREE.MeshBasicMaterial({color:0xffa34a,transparent:true,opacity:.1}));g.add(halo)}
+if(type==='black'){let ring=new THREE.Mesh(new THREE.TorusGeometry(6,.45,12,80),new THREE.MeshBasicMaterial({color:0x9b54ff,transparent:true,opacity:.85}));ring.rotation.x=1.1;g.add(ring);g.add(new THREE.PointLight(0x813dff,100,35))}
+if(type==='planet'||type==='moon'){let shell=new THREE.Mesh(new THREE.SphereGeometry(r*1.015,24,24),new THREE.MeshBasicMaterial({color:0x9bdcff,wireframe:true,transparent:true,opacity:.07}));g.add(shell)}
+world.add(g);let b={type,g,m,r,v:new THREE.Vector3((Math.random()-.5)*.35,0,(Math.random()-.5)*.35)};bodies.push(b);selected=b;update();notify(names[type]+' создана');return b}
+function reset(){bodies.forEach(b=>world.remove(b.g));bodies=[];selected=null;create('star',new THREE.Vector3());create('planet',new THREE.Vector3(18,0,0));create('moon',new THREE.Vector3(23,0,0));update();camera.position.set(0,25,75);camera.lookAt(0,0,0);notify('Вселенная создана')}
+document.querySelectorAll('[data-type]').forEach(b=>b.onclick=()=>create(b.dataset.type));
+$('reset').onclick=reset;$('remove').onclick=()=>{if(!selected)return notify('Сначала выбери или создай объект');world.remove(selected.g);bodies=bodies.filter(x=>x!==selected);selected=null;update();notify('Объект удалён')};
+$('blast').onclick=()=>{let p=selected?selected.g.position.clone():new THREE.Vector3();let flash=new THREE.PointLight(0xa66cff,700,100);flash.position.copy(p);scene.add(flash);let n=0,id=setInterval(()=>{flash.intensity*=.78;if(++n>18){clearInterval(id);scene.remove(flash)}},35);let power=+$('power').value/100;bodies.forEach(b=>b.v.add(b.g.position.clone().sub(p).normalize().multiplyScalar(power*.9)));notify('Космический импульс!')};
+$('pause').onclick=()=>{paused=!paused;$('pause').textContent=paused?'▶ Играть':'Ⅱ Пауза';notify(paused?'Время остановлено':'Время запущено')};
+$('campaign').onclick=()=>{mode=mode==='SANDBOX'?'CAMPAIGN':'SANDBOX';$('campaign').textContent=mode==='SANDBOX'?'Кампания':'Песочница';$('mode').textContent=mode+' • GOD MODE';notify('Режим: '+mode)};
+$('speed').oninput=e=>{speed=+e.target.value/100;$('clock').textContent=speed.toFixed(1)+'×'};$('gravity').oninput=e=>grav=+e.target.value/100;$('power').oninput=e=>$('powerval').textContent=e.target.value+'%';
+$('zoom').oninput=e=>{let target=180-(+e.target.value);camera.position.setLength(target)};
+$('focus').onclick=()=>{if(!selected)return notify('Выбери объект');let p=selected.g.position;camera.position.copy(p.clone().add(new THREE.Vector3(0,20,55)));camera.lookAt(p)};
+let down=false,px=0,py=0;renderer.domElement.addEventListener('pointerdown',e=>{down=true;px=e.clientX;py=e.clientY;renderer.domElement.setPointerCapture(e.pointerId)});renderer.domElement.addEventListener('pointerup',()=>down=false);renderer.domElement.addEventListener('pointermove',e=>{if(!down)return;let dx=e.clientX-px,dy=e.clientY-py;px=e.clientX;py=e.clientY;let s=new THREE.Spherical().setFromVector3(camera.position);s.theta-=dx*.005;s.phi=THREE.MathUtils.clamp(s.phi+dy*.005,.15,Math.PI-.15);camera.position.setFromSpherical(s);camera.lookAt(0,0,0)});
+renderer.domElement.addEventListener('wheel',e=>{camera.position.multiplyScalar(e.deltaY>0?1.08:.92);camera.position.clampLength(12,280)},{passive:true});
+const clock=new THREE.Clock();function animate(){requestAnimationFrame(animate);let dt=Math.min(clock.getDelta(),.04);if(!paused){let d=dt*speed;stars.rotation.y+=d*.002;bodies.forEach(b=>{b.m.rotation.y+=d*.12;if(b.type==='black'){if(b.g.children[1])b.g.children[1].rotation.z+=d*.3;bodies.slice().forEach(o=>{if(o===b)return;let dist=b.g.position.distanceTo(o.g.position);if(dist<13){o.g.position.lerp(b.g.position,.012*speed);if(dist<b.r*.8){world.remove(o.g);bodies=bodies.filter(x=>x!==o);update()}}})}else{b.g.position.addScaledVector(b.v,d*8);if(grav>0){let nearest=null,dist=Infinity;bodies.forEach(o=>{if(o===b||o.type==='black')return;let x=b.g.position.distanceTo(o.g.position);if(x<dist){dist=x;nearest=o}});if(nearest&&dist>3){let dir=nearest.g.position.clone().sub(b.g.position).normalize();b.v.addScaledVector(dir,grav*d*.006/(dist*.1+1))}}}})}renderer.render(scene,camera)}
+reset();animate();addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+})();
+</script></body></html>
